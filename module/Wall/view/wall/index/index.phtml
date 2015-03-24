@@ -39,8 +39,44 @@
                         <h2><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></h2>
                     </div>
                 <section>
+                <section>
+                    <div class="tabbable"> <!-- Only required for left/right tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#wall-status" data-toggle="tab"><i class="icon-pencil"></i></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <?php //echo $imageContentForm->hasValidated() == false || $imageContentForm->isValid() == true? '' : 'active' ?>
+                            <div class="tab-pane active" id="wall-status">
+<?php
+// the next line adds the form partial for text-content-form and passes
+// it itself as a parameter.
+                                <?php echo $this->partial('forms/text-content-form.phtml', array('form' => $textContentForm)); ?>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <ul class="post-list">
+                        <?php
+                            // iterate over the getFeed() results.
+                            foreach ($profileData->getFeed() as $entry) : ?>
+                            <li class="post">
+                                <section>
+                                    <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="pull-left thumbnail">
+                                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" />
+                                    </a>
+                                    <div class="post-body">
+                                        <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>"><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></a></h4>
+                                        <?php if ($entry instanceOf \Wall\Entity\Status) : ?>
+                                            <p><?php echo $entry->getStatus() ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                </section>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul> <!-- Close post list -->
+                <section>
             </div> <!-- Close wall profile -->
         </div>
     </div>
-</div>
 </div>

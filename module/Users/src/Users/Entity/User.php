@@ -2,6 +2,9 @@
 
 namespace Users\Entity;
 
+use Zend\Stdlib\Hydrator\ClassMethods;
+use Wall\Entity\Status;
+
 class User
 {
     const GENDER_MALE = 1;
@@ -16,6 +19,36 @@ class User
     protected $gender;
     protected $createdAt = null;
     protected $updatedAt = null;
+    /*
+     * $feed will contain an array of entries. For now, they
+     * will be the Statuses object.
+     */
+    protected $feed = array();
+
+    public function getFeed()
+    {
+        return $this->feed;
+    }
+
+    public function setFeed($feed)
+    {
+        /*
+         * New ClassMethod hydrator will populate the Status
+         * object based on the data we get from the API
+         * using the setters defined in the entity.
+         *
+         * After the object is populated, we just store it
+         * on the array we created before as a property.
+         */
+        $hydrator = new ClassMethods();
+        foreach($feed as $entry) {
+            if (array_key_exists('status', $entry)) {
+                $this->feed[] = $hydrator->hydrate(
+                    $entry, new Status()
+                );
+            }
+        }
+    }
 
     public function setId($id)
     {
