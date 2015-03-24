@@ -2,17 +2,15 @@
 
 namespace Wall\Controller;
 
-use Users\Entity\User as User;
-use Api\Client\ApiClient as ApiClient;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Stdlib\Hydrator\ClassMethods;
+use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Entity\Status;
-use Wall\Entity\Image;
-
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
+use Api\Client\ApiClient as ApiClient;
 
 class IndexController extends AbstractActionController
 {
@@ -94,6 +92,8 @@ class IndexController extends AbstractActionController
                 $statusForm = $result;
                 break;
             case $result instanceOf ImageForm:
+                $imageForm = $result;
+                /*
                 if ($result instanceOf ImageForm) {
                     $imageForm = $result;
                 } else {
@@ -110,6 +110,7 @@ class IndexController extends AbstractActionController
                         return $this->getResponse()->setStatusCode(500);
                     }
                 }
+                 */
                 break;
             default:
                 /*
@@ -143,10 +144,9 @@ class IndexController extends AbstractActionController
          * In this case, the $user->getUsername() method can be inspected
          * in the class Users\Entity\User.
          */
-        $statusForm->setAttribute('action', $this->url()->fromRoute('wall',
-            array('username' => $user->getUsername())));
-        $imageForm->setAttribute('action', $this->url()->fromRoute('wall',
-            array('username' => $user->getUsername())));
+        $statusForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
+        $imageForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
+
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
@@ -300,9 +300,7 @@ class IndexController extends AbstractActionController
             unset($data['submit']);
             unset($data['csrf']);
 
-            $response = ApiClient::postWallContent(
-                $user->getUsername(), $data
-            );
+            $response = ApiClient::postWallContent($user->getUsername(), $data);
             return $response['result'];
         }
         return $form;

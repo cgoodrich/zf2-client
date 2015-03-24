@@ -50,7 +50,6 @@ class User
         }
     }
 
-
     public function getFeed()
     {
         return $this->feed;
@@ -70,15 +69,12 @@ class User
          * are processing an image.
          */
         $hydrator = new ClassMethods();
-        foreach($feed as $entry) {
+
+        foreach ($feed as $entry) {
             if (array_key_exists('status', $entry)) {
-                $this->feed[] = $hydrator->hydrate(
-                    $entry, new Status()
-                );
+                $this->feed[] = $hydrator->hydrate($entry, new Status());
             } else if (array_key_exists('filename', $entry)) {
-                $this->feed[] = $hydrator->hydrate(
-                    $entry, new Image()
-                );
+                $this->feed[] = $hydrator->hydrate($entry, new Image());
             }
         }
     }
