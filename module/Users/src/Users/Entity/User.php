@@ -3,6 +3,8 @@
 namespace Users\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\Factory as InputFactory;
 use Wall\Entity\Status;
 
 class User

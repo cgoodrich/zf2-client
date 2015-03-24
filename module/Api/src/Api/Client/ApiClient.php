@@ -86,6 +86,11 @@ class ApiClient {
     protected static function doRequest($url, array $postData = null, $method = Request::METHOD_GET)
     {
         $client = self::getClientInstance();
+        // Set the timeout to a higher value, in case working on
+        // a remote API that has long duration to return a response object.
+        $client->setOptions(array(
+            'timeout' => 30,
+        ));
         $client->setUri($url);
         $client->setMethod($method);
 

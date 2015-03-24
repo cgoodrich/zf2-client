@@ -20,6 +20,7 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $viewData = array();
+        $flashMessenger = $this->flashMessenger();
 
         // we retrieve the username from the URL
         $username = $this->params()->fromRoute('username');
@@ -149,8 +150,8 @@ class IndexController extends AbstractActionController
         if ($form->isValid()) {
             $data = $form->getData();
             $data['user_id'] = $user->getId();
-            unset($data['submit'];
-            unset($data['csrf'];
+            unset($data['submit']);
+            unset($data['csrf']);
 
             $response = ApiClient::postWallContent(
                 $user->getUsername(), $data

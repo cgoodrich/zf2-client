@@ -3,4 +3,6 @@
 return array(
     'Wall\Module'                     => __DIR__ . '/Module.php',
     'Wall\Controller\IndexController' => __DIR__ . '/src/Wall/Controller/IndexController.php',
+    'Wall\Entity\Status'              => __DIR__ . '/src/Wall/Entity/Status.php',
+    'Wall\Forms\TextStatusForm'       => __DIR__ . '/src/Wall/Forms/TextStatusForm.php',
 );
