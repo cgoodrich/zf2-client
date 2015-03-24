@@ -3,5 +3,4 @@
 return array(
     'Common\Module'                     => __DIR__ . '/Module.php',
     'Common\Controller\IndexController' => __DIR__ . '/src/Common/Controller/IndexController.php',
-    'Common\View\Helper\FlashMessenger' => __DIR__ . '/src/Common/View/Helper/FlashMessenger.php',
 );
