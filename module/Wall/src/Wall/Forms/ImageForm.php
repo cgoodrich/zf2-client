@@ -3,7 +3,6 @@ namespace Wall\Forms;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
-// Allows us to use getInputFilterSpecification()
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /*

@@ -5,9 +5,9 @@ namespace Users\Entity;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
-use Wall\Entity\Status;
 use Wall\Entity\Link;
 use Wall\Entity\Image;
+use Wall\Entity\Status;
 
 class User
 {

@@ -2,18 +2,19 @@
 
 namespace Wall\Entity;
 
+/*
+ * $domain will be used in a method that generates the URL
+ * of the image.
+ *
+ * We are passing the image to the API, so it should be accessible
+ * via URL in order to see it.
+ *
+ * In a production project, you would typically serve this from a CDN
+ * (content distribution network) or another cookieless domain.
+ */
+
 class Image
 {
-    /*
-     * $domain will be used in a method that generates the URL
-     * of the image.
-     *
-     * We are passing the image to the API, so it should be accessible
-     * via URL in order to see it.
-     *
-     * In a production project, you would typically serve this from a CDN
-     * (content distribution network) or another cookieless domain.
-     */
     public $domain = 'http://zf2-api/images/';
 
     protected $id = null;
@@ -74,7 +75,6 @@ class Image
 
     public function getUrl()
     {
-        // append the filename to the Url
         return $this->domain . $this->getFilename();
     }
 }
