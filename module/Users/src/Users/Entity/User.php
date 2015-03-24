@@ -6,6 +6,8 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Wall\Entity\Status;
+use Wall\Entity\Link;
+use Wall\Entity\Image;
 
 class User
 {
@@ -27,6 +29,28 @@ class User
      */
     protected $feed = array();
 
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar)
+    {
+        if (empty($avatar)) {
+            // If no avatar is assigned, show a default image
+            $defaultImage = new Image();
+            // This is the location of the default image
+            $defaultImage->setFilename('default.png');
+            $this->avatar = $defaultImage;
+        } else {
+            // If the avatar is assigned, then load the information using
+            // Hydrator into an Image entity.
+            $hydrator = new ClassMethods();
+            $this->avatar = $hydrator->hydrate($avatar, new Image());
+        }
+    }
+
+
     public function getFeed()
     {
         return $this->feed;
@@ -41,12 +65,19 @@ class User
          *
          * After the object is populated, we just store it
          * on the array we created before as a property.
+         *
+         * We have added a new else if block to check if we
+         * are processing an image.
          */
         $hydrator = new ClassMethods();
         foreach($feed as $entry) {
             if (array_key_exists('status', $entry)) {
                 $this->feed[] = $hydrator->hydrate(
                     $entry, new Status()
+                );
+            } else if (array_key_exists('filename', $entry)) {
+                $this->feed[] = $hydrator->hydrate(
+                    $entry, new Image()
                 );
             }
         }
@@ -72,10 +103,6 @@ class User
         $this->surname = $surname;
     }
 
-    public function setAvatar($avatar)
-    {
-        $this->avatar = $avatar;
-    }
 
     public function setBio($bio)
     {
@@ -135,11 +162,6 @@ class User
     public function getGender()
     {
         return $this->gender;
-    }
-
-    public function getAvatar()
-    {
-        return $this->avatar;
     }
 
     public function getGenderString()

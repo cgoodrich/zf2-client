@@ -2,13 +2,17 @@
 
 namespace Wall\Controller;
 
+use Users\Entity\User as User;
+use Api\Client\ApiClient as ApiClient;
 use Wall\Forms\TextStatusForm;
+use Wall\Forms\ImageForm;
 use Wall\Entity\Status;
+use Wall\Entity\Image;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Users\Entity\User as User;
-use Api\Client\ApiClient as ApiClient;
+use Zend\Validator\File\Size;
+use Zend\Validator\File\IsImage;
 
 class IndexController extends AbstractActionController
 {
@@ -55,8 +59,9 @@ class IndexController extends AbstractActionController
         // Get the request object
         $request = $this->getRequest();
         // Create a new instance of TextStatusForm
-        $statusForm = new TextStatusForm;
-
+        $statusForm = new TextStatusForm();
+        // Create a new instance of ImageForm
+        $imageForm = new ImageForm();
         // Check if we are posting any data.
         if ($request->isPost()) {
             // If it is a POST, then convert the data to an Array.
@@ -71,6 +76,13 @@ class IndexController extends AbstractActionController
                  */
                 $result = $this->createStatus($statusForm, $user, $data);
             }
+            if (!empty($request->getFiles()->image)) {
+                $data = array_merge_recursive(
+                    $data,
+                    $request->getFiles()->toArray()
+                );
+                $result = $this->createImage($imageForm, $user, $data);
+            }
 
             /*
              * After calling the createStatus() method, check the returned
@@ -81,6 +93,24 @@ class IndexController extends AbstractActionController
             case $result instanceOf TextStatusForm:
                 $statusForm = $result;
                 break;
+            case $result instanceOf ImageForm:
+                if ($result instanceOf ImageForm) {
+                    $imageForm = $result;
+                } else {
+                    if ($result == true) {
+                        $this->flashMessenger()->addSuccessMessage(
+                            'Your image has been posted!'
+                        );
+
+                        return $this->redirect()->toRoute(
+                            'wall',
+                            array('username' => $user->getUsername())
+                        );
+                    } else {
+                        return $this->getResponse()->setStatusCode(500);
+                    }
+                }
+                break;
             default:
                 /*
                  * If the post has been a success, add a success message
@@ -88,7 +118,7 @@ class IndexController extends AbstractActionController
                  * to show the new content.
                  */
                 if ($result == true) {
-                    $flashMessenger->addSuccessMessage('New content posted!');
+                    $flashMessenger->addSuccessMessage('New status posted!');
                     return $this->redirect()->toRoute('wall', array(
                         'username' => $user->getUsername()));
                 } else {
@@ -117,6 +147,7 @@ class IndexController extends AbstractActionController
             array('username' => $user->getUsername())));
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
+        $viewData['imageContentForm'] = $imageForm;
 
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
@@ -124,6 +155,120 @@ class IndexController extends AbstractActionController
 
         // return an array containing $viewData to the view.
         return $viewData;
+    }
+
+    /**
+     * Upload a new image
+     *
+     * @param Zend\Form\Form $form
+     * @param Users\Entity\User $user
+     * @param array $data
+     */
+    protected function createImage($form, $user, $data)
+    {
+        /*
+         * Check if there is an error while uploading the file.
+         * If we find one, set the value to null to force
+         * the form validation to fail.
+         */
+        if ($data['image']['error'] != 0) {
+            $data['image'] = NULL;
+        }
+
+        $form->setData($data);
+
+        /*
+         * This will fail (IsImage()) if the above result is NULL.
+         */
+        $size = new Size(array('max' => 2048000));
+        $isImage = new IsImage();
+        $filename = $data['image']['name'];
+
+        /*
+         * This will take care of receiving the file and
+         * validating it, using the validators we configured
+         * as shown below.
+         */
+        // Create an instance of the HTTP validator.
+        $adapter = new \Zend\File\Transfer\Adapter\Http();
+        // Set the validators we created above.
+        // Pass the name of the file as the second parameter.
+        $adapter->setValidators(array($size, $isImage), $filename);
+
+        // Validate the file itself
+        if (!$adapter->isValid($filename)){
+            $errors = array();
+            // Iterate over any errors to add them as an error message
+            // to the form.
+            foreach($adapter->getMessages() as $key => $row) {
+                $errors[] = $row;
+            }
+            $form->setMessages(array('image' => $errors));
+        }
+
+        if ($form->isValid()) {
+            $destPath = 'data/tmp/';
+            // Set the temporary destination for the file.
+            // After the file is uploaded, we will remove it from this folder.
+            $adapter->setDestination($destPath);
+
+            /*
+             * Get info related to the image from the adapter
+             * Do a regular expression to get the file extension
+             * Generate a new filename utilizing the same method as the API.
+             *
+             * In this case, though, we reuse the original file extension.
+             */
+            $fileinfo = $adapter->getFileInfo();
+            preg_match('/.+\/(.+)/', $fileinfo['image']['type'], $matches);
+            $extension = $matches[1];
+            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
+
+            /*
+             * Add a filter to the file adapter to rename the file when we
+             * receive it.
+             *
+             * Set the target of the file passing the path and the filename
+             * and then force it to overwrite.
+             *
+             * In theory, we will never have to overwrite filenames because
+             * they are unique.
+             */
+            $adapter->addFilter('File\Rename',
+                array(
+                    'target' => $destPath . $newFilename,
+                    'overwrite' => true,
+                )
+            );
+
+            /*
+             * Receive the file, move it from teh temp folder PHP uses to the
+             * one that will execute the filters we attached.
+             */
+            if ($adapter->receive($filename)) {
+                // build an array that will be the container for the data.
+                $data = array();
+                // read the file contents, base64 encode as a string
+                // on the $data array.
+                $data['image'] = base64_encode(
+                    file_get_contents(
+                        $destPath . $newFilename
+                    )
+                );
+                // add the 'user_id' to $data['user_id']
+                $data['user_id'] = $user->getId();
+
+                // Delete the temporary file
+                unlink($destPath . $newFilename);
+
+                // Use ApiClient to send the data to our API.
+                $response = ApiClient::postWallContent($user->getUsername(), $data);
+                // Return the API response.
+                return $response['result'];
+            }
+        }
+
+        return $form;
     }
 
     protected function createStatus($form, $user, array $data)

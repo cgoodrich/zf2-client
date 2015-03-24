@@ -1,0 +1,434 @@
+Only in module/Api: autoload_classmap.php
+diff -r module/Api/Module.php ../source-code/chap-6/client/module/Api/Module.php
+1a2,8
+> /**
+>  * Zend Framework (http://framework.zend.com/)
+>  *
+>  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+>  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+>  * @license   http://framework.zend.com/license/new-bsd New BSD License
+>  */
+10d16
+<     // This isn't really necessary to have.
+diff -r module/Api/src/Api/Client/ApiClient.php ../source-code/chap-6/client/module/Api/src/Api/Client/ApiClient.php
+19c19
+< 
+---
+>     
+26c26
+< 
+---
+>     
+34c34
+< 
+---
+>     
+47c47
+< 
+---
+>     
+51,52c51,52
+<      * @param string $username
+<      * @param array $data
+---
+>      * @param string $username 
+>      * @param array $data 
+60c60
+< 
+---
+>     
+62c62
+<      * Create a new instance of the Client if we don't have it or
+---
+>      * Create a new instance of the Client if we don't have it or 
+73c73
+< 
+---
+>         
+76c76
+< 
+---
+>     
+89,93d88
+<         // Set the timeout to a higher value, in case working on
+<         // a remote API that has long duration to return a response object.
+<         $client->setOptions(array(
+<             'timeout' => 30,
+<         ));
+96c91
+< 
+---
+>         
+100c95
+< 
+---
+>         
+102c97
+< 
+---
+>         
+112c107
+< }
+---
+> }
+\ No newline at end of file
+Only in module/Common: autoload_classmap.php
+diff -r module/Common/config/module.config.php ../source-code/chap-6/client/module/Common/config/module.config.php
+45,49d44
+<     'view_helpers' => array(
+<         'invokables' => array(
+<             'flashMessengerHelper' => 'Common\View\Helper\FlashMessenger',
+<         ),
+<     ),
+diff -r module/Common/src/Common/Controller/IndexController.php ../source-code/chap-6/client/module/Common/src/Common/Controller/IndexController.php
+20c20
+< 
+---
+>         
+Only in module/Common/src/Common: View
+diff -r module/Common/view/layout/layout.phtml ../source-code/chap-6/client/module/Common/view/layout/layout.phtml
+40c40,47
+<             <?php echo $this->flashMessengerHelper() ?>
+---
+>             <?php $flash = $this->flashMessenger()
+>                 ->setMessageOpenFormat('<div%s><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>')
+>                 ->setMessageSeparatorString('<br />')
+>                 ->setMessageCloseString('</div>'); ?>
+>             <?php echo $flash->render('error', array('alert', 'alert-dismissable', 'alert-danger')); ?>
+>             <?php echo $flash->render('info', array('alert', 'alert-dismissable', 'alert-info')); ?>
+>             <?php echo $flash->render('default', array('alert', 'alert-dismissable', 'alert-warning')); ?>
+>             <?php echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success')); ?>
+48c55
+< 
+---
+>         
+Only in module/Users: autoload_classmap.php
+diff -r module/Users/Module.php ../source-code/chap-6/client/module/Users/Module.php
+1a2,8
+> /**
+>  * Zend Framework (http://framework.zend.com/)
+>  *
+>  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+>  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+>  * @license   http://framework.zend.com/license/new-bsd New BSD License
+>  */
+12c19,20
+<         $eventManager = $e->getApplication()->getEventManager();
+---
+>         $e->getApplication()->getServiceManager()->get('translator');
+>         $eventManager        = $e->getApplication()->getEventManager();
+diff -r module/Users/src/Users/Entity/User.php ../source-code/chap-6/client/module/Users/src/Users/Entity/User.php
+7a8,9
+> use Wall\Entity\Link;
+> use Wall\Entity\Image;
+13c15
+< 
+---
+>     
+24,27d25
+<     /*
+<      * $feed will contain an array of entries. For now, they
+<      * will be the Statuses object.
+<      */
+29,83c27
+< 
+<     public function getAvatar()
+<     {
+<         return $this->avatar;
+<     }
+< 
+<     public function setAvatar($avatar)
+<     {
+<         if (empty($avatar)) {
+<             // If no avatar is assigned, show a default image
+<             $defaultImage = new Image();
+<             // This is the location of the default image
+<             $defaultImage->setFilename('default.png');
+<             $this->avatar = $defaultImage;
+<         } else {
+<             // If the avatar is assigned, then load the information using
+<             // Hydrator into an Image entity.
+<             $hydrator = new ClassMethods();
+<             $this->avatar = $hydrator->hydrate($avatar, new Image());
+<         }
+<     }
+< 
+< 
+<     public function getFeed()
+<     {
+<         return $this->feed;
+<     }
+< 
+<     public function setFeed($feed)
+<     {
+<         /*
+<          * New ClassMethod hydrator will populate the Status
+<          * object based on the data we get from the API
+<          * using the setters defined in the entity.
+<          *
+<          * After the object is populated, we just store it
+<          * on the array we created before as a property.
+<          *
+<          * We have added a new else if block to check if we
+<          * are processing an image.
+<          */
+<         $hydrator = new ClassMethods();
+<         foreach($feed as $entry) {
+<             if (array_key_exists('status', $entry)) {
+<                 $this->feed[] = $hydrator->hydrate(
+<                     $entry, new Status()
+<                 );
+<             } else if (array_key_exists('filename', $entry)) {
+<                 $this->feed[] = $hydrator->hydrate(
+<                     $entry, new Image()
+<                 );
+<             }
+<         }
+<     }
+< 
+---
+>     
+88c32
+< 
+---
+>     
+93c37
+< 
+---
+>     
+98c42
+< 
+---
+>     
+103,104c47,59
+< 
+< 
+---
+>     
+>     public function setAvatar($avatar)
+>     {
+>         if (empty($avatar)) {
+>             $defaultImage = new Image();
+>             $defaultImage->setFilename('default.png');
+>             $this->avatar = $defaultImage;
+>         } else {
+>             $hydrator = new ClassMethods();
+>             $this->avatar = $hydrator->hydrate($avatar, new Image());
+>         }
+>     }
+>     
+109c64
+< 
+---
+>     
+114c69
+< 
+---
+>     
+119c74,87
+< 
+---
+>     
+>     public function setFeed($feed)
+>     {
+>         $hydrator = new ClassMethods();
+>         
+>         foreach ($feed as $entry) {
+>             if (array_key_exists('status', $entry)) {
+>                 $this->feed[] = $hydrator->hydrate($entry, new Status());
+>             } else if (array_key_exists('filename', $entry)) {
+>                 $this->feed[] = $hydrator->hydrate($entry, new Image());
+>             }
+>         }
+>     }
+>     
+124c92
+< 
+---
+>     
+129c97
+< 
+---
+>     
+134c102
+< 
+---
+>     
+139c107
+< 
+---
+>     
+144c112
+< 
+---
+>     
+149c117
+< 
+---
+>     
+154c122
+< 
+---
+>     
+159c127
+< 
+---
+>     
+164c132,137
+< 
+---
+>     
+>     public function getAvatar()
+>     {
+>         return $this->avatar;
+>     }
+>     
+169c142,147
+< 
+---
+>     
+>     public function getFeed()
+>     {
+>         return $this->feed;
+>     }
+>     
+174c152
+< 
+---
+>     
+179c157
+< }
+---
+> }
+\ No newline at end of file
+Only in module/Wall: autoload_classmap.php
+diff -r module/Wall/config/module.config.php ../source-code/chap-6/client/module/Wall/config/module.config.php
+1a2,8
+> /**
+>  * Zend Framework (http://framework.zend.com/)
+>  *
+>  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+>  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+>  * @license   http://framework.zend.com/license/new-bsd New BSD License
+>  */
+26,27d32
+<     // this is the client application, so we are going to take care
+<     // configuring the View Manager.
+29,34c34
+<         'display_not_found_reason'  => true,
+<         'display_exceptions'        => true,
+<         'doctype'                   => HTML5,
+<         'not_found_template'        => 'error/404',
+<         'exception_template'        => 'error/index',
+<         'template_path_stack'       => array(
+---
+>         'template_path_stack' => array(
+38c38
+< );
+---
+> );
+\ No newline at end of file
+diff -r module/Wall/Module.php ../source-code/chap-6/client/module/Wall/Module.php
+1a2,8
+> /**
+>  * Zend Framework (http://framework.zend.com/)
+>  *
+>  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+>  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+>  * @license   http://framework.zend.com/license/new-bsd New BSD License
+>  */
+diff -r module/Wall/src/Wall/Controller/IndexController.php ../source-code/chap-6/client/module/Wall/src/Wall/Controller/IndexController.php
+1a2,8
+> /**
+>  * Zend Framework (http://framework.zend.com/)
+>  *
+>  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+>  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+>  * @license   http://framework.zend.com/license/new-bsd New BSD License
+>  */
+5,6c12,14
+< use Users\Entity\User as User;
+< use Api\Client\ApiClient as ApiClient;
+---
+> use Zend\Mvc\Controller\AbstractActionController;
+> use Zend\Stdlib\Hydrator\ClassMethods;
+> use Users\Entity\User;
+10,13d17
+< use Wall\Entity\Image;
+< 
+< use Zend\Mvc\Controller\AbstractActionController;
+< use Zend\Stdlib\Hydrator\ClassMethods;
+15a20
+> use Api\Client\ApiClient as ApiClient;
+19,23d23
+<     /*
+<      * We have one action: indexAction().
+<      *
+<      * This action is the one in charge of wall requests.
+<      */
+29d28
+<         // we retrieve the username from the URL
+31d29
+<         // pass the username to the layout
+33,34c31
+<         // use the ApiClient to get the data of the wall by
+<         // calling getWall()
+---
+> 
+37d33
+<         // if we have a response, then decode it.
+39,46d34
+<             // hydrator is a component from Stdlib in ZF2
+<             // it is used to populate objects with data.
+< 
+<             /*
+<              * We use a ClassMethods() hydrator, which means that when
+<              * the hydrator tries to populate, an object will try to
+<              * use setter functions inside the object.
+<              */
+49,50d36
+<             // hydrate a new User entity (Users\Entity\User) with the
+<             // $response object.
+53d38
+<             // otherwise, set a 404 code and return if the $response is FALSE.
+58,59c43
+< 
+<         // Get the request object
+---
+>         //Check if we are submitting content
+61d44
+<         // Create a new instance of TextStatusForm
+62a46
+>         $imageForm = new ImageForm();
+64d47
+<         // Check if we are posting any data.
+66d48
+<             // If it is a POST, then convert the data to an Array.
+69d50
+<             // Check if it is a 'status' entry.
+71,75d51
+<                 /*
+<                  * If it is a status entry, then pass the form, user and data
+<                  * to the createStatus() method in order to create
+<                  * the status.
+<                  */
+77a54
+> 
+79c56
+<                 $data = array_merge_recrusive(
+---
+>                 $data = array_merge_recursive(
+86,90d62
+<             /*
+<              * After calling the createStatus() method, check the returned
+<              * value to see if the data was sotred correctly or a form
+<              * containing errors has been returned.
+<              */
+96,111c68
+<                 if ($result instanceOf ImageForm) {
+<                     $imageForm = $result;
+<                 } else {
+<                     if ($result == true) {
+<                         $this->flashMessenger()->addSuccessMessage(
+<                             'Your image has been posted!'
+<                         );
