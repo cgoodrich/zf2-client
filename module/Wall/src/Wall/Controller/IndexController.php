@@ -145,6 +145,8 @@ class IndexController extends AbstractActionController
          */
         $statusForm->setAttribute('action', $this->url()->fromRoute('wall',
             array('username' => $user->getUsername())));
+        $imageForm->setAttribute('action', $this->url()->fromRoute('wall',
+            array('username' => $user->getUsername())));
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
