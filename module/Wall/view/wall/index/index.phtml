@@ -47,9 +47,6 @@
                         <div class="tab-content">
                             <?php //echo $imageContentForm->hasValidated() == false || $imageContentForm->isValid() == true? '' : 'active' ?>
                             <div class="tab-pane active" id="wall-status">
-<?php
-// the next line adds the form partial for text-content-form and passes
-// it itself as a parameter.
                                 <?php echo $this->partial('forms/text-content-form.phtml', array('form' => $textContentForm)); ?>
                             </div>
                         </div>
@@ -57,9 +54,7 @@
                 </section>
                 <section>
                     <ul class="post-list">
-                        <?php
-                            // iterate over the getFeed() results.
-                            foreach ($profileData->getFeed() as $entry) : ?>
+                        <?php foreach ($profileData->getFeed() as $entry) : ?>
                             <li class="post">
                                 <section>
                                     <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="pull-left thumbnail">
