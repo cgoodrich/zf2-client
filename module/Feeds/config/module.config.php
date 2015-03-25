@@ -13,7 +13,7 @@ return array(
             'feeds' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/:username/feeds[/:feed_id][/page/:page]',
+                    'route'    => '/:username/feeds[/:feed_id][/:page]',
                     'constraints' => array(
                         'username' => '\w+',
                         'feed_id' => '\d*',

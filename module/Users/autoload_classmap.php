@@ -4,5 +4,6 @@ return array(
     'Users\Module'                     => __DIR__ . '/Module.php',
     'Users\Controller\IndexController' => __DIR__ . '/src/Users/Controller/IndexController.php',
     'Users\Entity\User'                => __DIR__ . '/src/Users/Entity/User.php',
+    'Users\Forms\LoginForm'            => __DIR__ . '/src/Users/Forms/LoginForm.php',
     'Users\Forms\SignupForm'           => __DIR__ . '/src/Users/Forms/SignupForm.php',
 );

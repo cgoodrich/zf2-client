@@ -21,6 +21,7 @@ use Wall\Entity\Wall;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
 use Api\Client\ApiClient;
+use Zend\Authentication\AuthenticationService;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
 
@@ -31,9 +32,14 @@ class IndexController extends AbstractActionController
         $viewData = array();
         $flashMessenger = $this->flashMessenger();
         
-        $username = $this->params()->fromRoute('username');
-        $this->layout()->username = $username;
+        $auth = new AuthenticationService();
+        $loggedInUser = $auth->getIdentity();
         
+        if ($loggedInUser === null) {
+            return;
+        }
+        
+        $username = $this->params()->fromRoute('username');
         $userData = ApiClient::getUser($username);
         
         if ($userData !== FALSE) {
@@ -80,7 +86,7 @@ class IndexController extends AbstractActionController
             }
             
             if (array_key_exists('comment', $data)) {
-                $result = $this->createComment($commentForm, $user, $data);
+                $result = $this->createComment($commentForm, $loggedInUser, $data);
             }
             
             switch (true) {
@@ -117,7 +123,6 @@ class IndexController extends AbstractActionController
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
         $viewData['isMyWall'] = !empty($loggedInUser)? $loggedInUser->getUsername() == $username : false;
-        $viewData['username'] = $username;
         $viewData['paginator'] = $paginator;
         
         if ($flashMessenger->hasMessages()) {
