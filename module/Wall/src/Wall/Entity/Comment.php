@@ -25,9 +25,9 @@ class Comment
         $this->user = $hydrator->hydrate($user, new User());
     }
 
-    public function setComments($comments)
+    public function setComment($comment)
     {
-        $this->comments = $comments;
+        $this->comment = $comment;
     }
 
     public function setCreatedAt($createdAt)
@@ -50,9 +50,9 @@ class Comment
         return $this->user;
     }
 
-    public function getComments()
+    public function getComment()
     {
-        return $this->comments;
+        return $this->comment;
     }
 
     public function getCreatedAt()

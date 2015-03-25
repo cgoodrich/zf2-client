@@ -91,7 +91,7 @@ class IndexController extends AbstractActionController
                 $result = $this->createLink($linkForm, $user, $data);
             }
             if (array_key_exists('comment', $data)) {
-                $result = $this->createComment($linkForm, $user, $data);
+                $result = $this->createComment($commentForm, $user, $data);
             }
 
             /*
