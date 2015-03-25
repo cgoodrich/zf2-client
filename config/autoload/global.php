@@ -30,4 +30,28 @@ return array(
             'ViewJsonStrategy',
         ),
     ),
+    'navigation' => array(
+        /*
+         * We have the default menu containing only labels and routes. This
+         * will force the Navigation components to use MVC pages and as
+         * you can imagine, we will benefit from the RouteMatch component
+         * that the component will generate.
+         */
+        'default' => array(
+            array(
+                'label' => 'Home',
+                'route' => 'wall',
+            ),
+            array(
+                'label' => 'Feeds',
+                'route' => 'feeds',
+            ),
+        ),
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            // Point navigation calls to the right file within ZF2.
+            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+        ),
+    ),
 );

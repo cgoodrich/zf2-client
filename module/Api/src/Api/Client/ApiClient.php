@@ -31,6 +31,8 @@ class ApiClient {
      */
     protected static $endpointHost = 'http://zf2-api';
     protected static $endpointWall = '/api/wall/%s';
+    protected static $endpointFeeds = '/api/feeds/%s';
+    protected static $endpointSpecificFeed = '/api/feeds/%s/%d';
 
     /**
      * Perform an API reqquest to retrieve the data of the wall
@@ -58,6 +60,44 @@ class ApiClient {
         return self::doRequest($url, $data, Request::METHOD_POST);
     }
 
+    public static function getFeeds($username)
+    {
+        /*
+         * Construct the URL:
+         * $endpointHost . $endpointFeeds . $username
+         */
+        $url = self::$endpointHost . sprintf(
+            self::$endpointFeeds,
+            $username
+        );
+        return self::doRequest($url);
+    }
+
+    public static function addFeedSubscription($username, $postData)
+    {
+        $url = self::$endpointHost . sprintf(
+            self::$endpointFeeds,
+            $username
+        );
+        // POST to the specified $url with the $postData.
+        return self::doRequest(
+            $url,
+            $postData,
+            Request::METHOD_POST
+        );
+    }
+
+    public static function removeFeedSubscription($username, $postData)
+    {
+        $url = self::$endpointHost . sprintf(
+            self::$endpointSpecificFeed,
+            $username,
+            $feedId
+        );
+        // make an HTTP request on the $url with DELETE specified
+        // as the HTTP verb.
+        return self::doRequest($url, null, Request::METHOD_DELETE);
+    }
     /**
      * Create a new instance of the Client if we don't have it or
      * return the one we already have to reuse

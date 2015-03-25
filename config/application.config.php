@@ -6,6 +6,7 @@ return array(
         'Common',
         'Users',
         'Wall',
+        'Feeds',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
