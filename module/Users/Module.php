@@ -15,6 +15,11 @@ class Module
         $moduleRouteListener->attach($eventManager);
     }
 
+    public function getConfig()
+    {
+        return include __DIR __ . '/config/module.config.php';
+    }
+
     public function getAutoloaderConfig()
     {
         return array(

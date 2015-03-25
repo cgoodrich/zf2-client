@@ -35,7 +35,7 @@ class IndexController extends AbstractActionController
         $this->layout()->username = $username;
         // use the ApiClient to get the data of the wall by
         // calling getWall()
-        $userData = ApiClient::getWall($username);
+        $userData = ApiClient::getUser($username);
 
         // if we have a response, then decode it.
         if ($userData !== FALSE) {
@@ -52,6 +52,8 @@ class IndexController extends AbstractActionController
             // hydrate a new User entity (Users\Entity\User) with the
             // $response object.
             $user = $hydrator->hydrate($userData, new User());
+            $hydrator = new ClassMethods();
+            $wallData = ApiClient::getWall($username);
             $wall = $hydrator->hydrate($userData, new Wall());
         } else {
             // otherwise, set a 404 code and return if the $response is FALSE.
