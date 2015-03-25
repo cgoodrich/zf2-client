@@ -1,0 +1,19 @@
+<?php $form = $this->form; ?>
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form) ?>
+<?php
+/*
+ * We don't use the formUrl() helper because the formElement()
+ * helper wiill introspect the field we are trying to print
+ * and will decide which is the best helper for the job and
+ * use it.
+ *
+ * It is like a universal view helper for form elements.
+ */
+<?php echo $this->formElement($form->get('url')); ?>
+<?php echo $this->formElement($form->get('submit')); ?>
+<?php echo $this->formElementErrors($form->get('url')); ?>
+<?php echo $this->formElement($form->get('csrf')); ?>
+<?php echo $this->formElementErrors($form->get('csrf')); ?>
+
+<?php echo $this->form()->closeTag() ?>

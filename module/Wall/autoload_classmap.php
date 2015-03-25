@@ -4,7 +4,9 @@ return array(
     'Wall\Module'                     => __DIR__ . '/Module.php',
     'Wall\Controller\IndexController' => __DIR__ . '/src/Wall/Controller/IndexController.php',
     'Wall\Entity\Image'               => __DIR__ . '/src/Wall/Entity/Image.php',
+    'Wall\Entity\Link'                => __DIR__ . '/src/Wall/Entity/Link.php',
     'Wall\Entity\Status'              => __DIR__ . '/src/Wall/Entity/Status.php',
     'Wall\Forms\ImageForm'            => __DIR__ . '/src/Wall/Forms/ImageForm.php',
+    'Wall\Forms\LinkForm'             => __DIR__ . '/src/Wall/Forms/LinkForm.php',
     'Wall\Forms\TextStatusForm'       => __DIR__ . '/src/Wall/Forms/TextStatusForm.php',
 );

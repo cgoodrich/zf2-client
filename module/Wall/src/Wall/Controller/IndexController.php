@@ -7,6 +7,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
+use Wall\Forms\LinkForm;
 use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
@@ -60,6 +61,8 @@ class IndexController extends AbstractActionController
         $statusForm = new TextStatusForm();
         // Create a new instance of ImageForm
         $imageForm = new ImageForm();
+        // Create a new instance of LinkForm
+        $linkForm = new LinkForm();
         // Check if we are posting any data.
         if ($request->isPost()) {
             // If it is a POST, then convert the data to an Array.
@@ -81,6 +84,9 @@ class IndexController extends AbstractActionController
                 );
                 $result = $this->createImage($imageForm, $user, $data);
             }
+            if (array_key_exists('url', $data)) {
+                $result = $this->createLink($linkForm, $user, $data);
+            }
 
             /*
              * After calling the createStatus() method, check the returned
@@ -91,9 +97,11 @@ class IndexController extends AbstractActionController
             case $result instanceOf TextStatusForm:
                 $statusForm = $result;
                 break;
+            case $result instanceOf LinkForm:
+                $linkForm = $result;
+                break;
             case $result instanceOf ImageForm:
                 $imageForm = $result;
-                /*
                 if ($result instanceOf ImageForm) {
                     $imageForm = $result;
                 } else {
@@ -110,7 +118,6 @@ class IndexController extends AbstractActionController
                         return $this->getResponse()->setStatusCode(500);
                     }
                 }
-                 */
                 break;
             default:
                 /*
@@ -146,10 +153,12 @@ class IndexController extends AbstractActionController
          */
         $statusForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $imageForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
+        $linkForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
 
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
+        $viewData['linkContentForm'] = $linkForm;
 
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
@@ -276,6 +285,11 @@ class IndexController extends AbstractActionController
     protected function createStatus($form, $user, array $data)
     {
         $form->setInputFilter(Status::getInputFilter());
+        return $this->processSimpleForm($form, $user, $data);
+    }
+
+    protected function createLink($form, $user, array $data)
+    {
         return $this->processSimpleForm($form, $user, $data);
     }
 
