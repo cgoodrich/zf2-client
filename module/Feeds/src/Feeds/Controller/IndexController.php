@@ -172,7 +172,7 @@ class IndexController extends AbstractActionController
             if ($response['result'] == TRUE) {
                 $this->flashMessenger()->addMessage('Subscribed successfully!');
             } else {
-                $this->flashMessenger()->addMessage($response['message']);
+                return $this->getResponse()->setStatusCode(500);
             }
         }
 

@@ -62,28 +62,36 @@ class ApiClient {
 
     public static function getFeeds($username)
     {
-        /*
-         * Construct the URL:
-         * $endpointHost . $endpointFeeds . $username
-         */
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
         return self::doRequest($url);
     }
 
+    /**
+     * Perform an API request to add a new subscription
+     *
+     * @param string $username
+     * @param array $postData
+     * @return Zend\Http\Response
+     */
     public static function addFeedSubscription($username, $postData)
     {
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
-        // POST to the specified $url with the $postData.
         return self::doRequest($url, $postData, Request::METHOD_POST);
     }
 
+    /**
+     * Perform an API request to remove a subscription
+     *
+     * @param string $username
+     * @param array $postData
+     * @return Zend\Http\Response
+     */
     public static function removeFeedSubscription($username, $feedId)
     {
         $url = self::$endpointHost . sprintf(self::$endpointSpecificFeed, $username, $feedId);
-        // make an HTTP request on the $url with DELETE specified
-        // as the HTTP verb.
         return self::doRequest($url, null, Request::METHOD_DELETE);
     }
+
     /**
      * Create a new instance of the Client if we don't have it or
      * return the one we already have to reuse
