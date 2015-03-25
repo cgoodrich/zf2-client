@@ -66,34 +66,20 @@ class ApiClient {
          * Construct the URL:
          * $endpointHost . $endpointFeeds . $username
          */
-        $url = self::$endpointHost . sprintf(
-            self::$endpointFeeds,
-            $username
-        );
+        $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
         return self::doRequest($url);
     }
 
     public static function addFeedSubscription($username, $postData)
     {
-        $url = self::$endpointHost . sprintf(
-            self::$endpointFeeds,
-            $username
-        );
+        $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
         // POST to the specified $url with the $postData.
-        return self::doRequest(
-            $url,
-            $postData,
-            Request::METHOD_POST
-        );
+        return self::doRequest($url, $postData, Request::METHOD_POST);
     }
 
-    public static function removeFeedSubscription($username, $postData)
+    public static function removeFeedSubscription($username, $feedId)
     {
-        $url = self::$endpointHost . sprintf(
-            self::$endpointSpecificFeed,
-            $username,
-            $feedId
-        );
+        $url = self::$endpointHost . sprintf(self::$endpointSpecificFeed, $username, $feedId);
         // make an HTTP request on the $url with DELETE specified
         // as the HTTP verb.
         return self::doRequest($url, null, Request::METHOD_DELETE);
