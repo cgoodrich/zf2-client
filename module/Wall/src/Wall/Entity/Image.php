@@ -2,6 +2,8 @@
 
 namespace Wall\Entity;
 
+use Zend\Stdlib\Hydrator\Classmethods;
+
 /*
  * $domain will be used in a method that generates the URL
  * of the image.
