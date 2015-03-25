@@ -23,7 +23,7 @@
                     </ul>
                 </section>
             </div>
-
+            
             <!-- Wall profile -->
             <div class="span9" id="wall">
                 <section>
@@ -68,9 +68,27 @@
                                         <?php elseif ($entry instanceOf \Wall\Entity\Image) : ?>
                                             <p><img src="<?php echo $entry->getUrl() ?>" width="400" /></p>
                                         <?php elseif ($entry instanceOf \Wall\Entity\Link) : ?>
-                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo $entry->getTitle() !== '' ? $entry->getTitle() : $entry->getUrl(); ?></a></p>
+                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo $entry->getTitle() ?></a></p>
                                         <?php endif; ?>
                                     </div>
+                                    <?php if ($entry->getComments() !== NULL) : ?>
+                                        <ul class="post-list">
+                                            <?php foreach ($entry->getComments() as $i => $c) : ?>
+                                                <li class="post <?php echo $i == count($entry->getComments()) - 1? 'last' : '' ?>">
+                                                    <section>
+                                                        <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>" class="pull-left thumbnail">
+                                                            <img src="/images/avatar.png" alt="Christopher Valles">
+                                                        </a>
+                                                        <div class="post-body">
+                                                            <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>"><?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?></a></h4>
+                                                            <p><?php echo $c->getComment() ?></p>
+                                                        </div>
+                                                    </section>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php endif; ?>
+                                    <?php echo $this->partial('forms/comment-content-form.phtml', array('form' => $commentContentForm, 'type' => $entry->getType(), 'entryId' => $entry->getId())); ?>
                                 </section>
                             </li>
                         <?php endforeach; ?>

@@ -4,6 +4,7 @@ namespace Wall\Entity;
 
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 class Status
 {
@@ -12,10 +13,39 @@ class Status
     protected $status = null;
     protected $createdAt = null;
     protected $updatedAt = null;
+    protected $comments = null;
+
+    const COMMENT_TYPE_ID = 1;
 
     public function setId($id)
     {
         $this->id = (int)$id;
+    }
+
+    /*
+     * Setter for coments - iterate over comments, if any, and
+     * populate a new Comment instance appending it to the
+     * $comments property.
+     */
+    public function setComments($comments)
+    {
+        $hydrator = new ClassMethods();
+
+        foreach($comments as $c) {
+            // instantiate new Comment instance, hydrating
+            // it with each Comment passed in to the setter.
+            $this->comments[] = $hydrator->hydrate($c, new Comment());
+        }
+    }
+
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    public function getType()
+    {
+        return self::COMMENT_TYPE_ID;
     }
 
     public function setUserId($userId)
