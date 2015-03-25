@@ -11,8 +11,8 @@ class FlashMessenger extends AbstractHelper
 
     public function __invoke()
     {
-        $viewVariables = $this->getView()->viewModel()->getCurrent()->getChildren();
-        $viewVars = reset($viewVariables);
+        $variables = $this->getView()->viewModel()->getCurrent()->getChildren();
+        $viewVars = reset($variables);
         $messages = $viewVars->flashMessages ?: array();
 
         $html = '';

@@ -9,10 +9,10 @@ class SignupForm extends Form
     public function __construct($name = null)
     {
         parent::__construct('users-signup');
-
+        
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'well form-horizontal');
-
+        
         $this->add(array(
             'name' => 'username',
             'type'  => 'Zend\Form\Element\Text',
@@ -117,7 +117,7 @@ class SignupForm extends Form
                 )
             )
         ));
-
+        
         $this->add(new Element\Csrf('csrf'));
         $this->add(array(
             'name' => 'register',

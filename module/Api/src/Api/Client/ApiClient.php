@@ -2,12 +2,10 @@
 
 namespace Api\Client;
 
-use Zend\Http\Client;
-use Zend\Http\Request;
+use Zend\Http\Client as Client;
+use Zend\Http\Request as Request;
 use Zend\Json\Decoder as JsonDecoder;
-use Zend\Json\Json;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Stream;
+use Zend\Json\Json as Json;
 
 /**
  * This client manages all the operations needed to interface with the
@@ -36,14 +34,6 @@ class ApiClient {
     protected static $endpointUsers = '/api/users';
     protected static $endpointGetUser = '/api/users/%s';
 
-    /*
-     * Let a user sign up
-     */
-    public static function registerUser($postData)
-    {
-        $url = self::$endpointHost . self::$endpointUsers;
-        return self::doRequest($url, $postData, Request::METHOD_POST);
-    }
     /**
      * Perform an API reqquest to retrieve the data of the wall
      * of an specific user on the social network
@@ -70,6 +60,12 @@ class ApiClient {
         return self::doRequest($url, $data, Request::METHOD_POST);
     }
 
+    /**
+     * Perform an API request to get the list subscriptions of a username
+     *
+     * @param string $username
+     * @return Zend\Http\Response
+     */
     public static function getFeeds($username)
     {
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
@@ -103,6 +99,30 @@ class ApiClient {
     }
 
     /**
+     * Perform an API request to add a new user
+     *
+     * @param array $postData
+     * @return Zend\Http\Response
+     */
+    public static function registerUser($postData)
+    {
+        $url = self::$endpointHost . self::$endpointUsers;
+        return self::doRequest($url, $postData, Request::METHOD_POST);
+    }
+
+    /**
+     * Perform an API request to get the basic data of a user
+     *
+     * @param string $username
+     * @return Zend\Http\Response
+     */
+    public static function getUser($username)
+    {
+        $url = self::$endpointHost . sprintf(self::$endpointGetUser, $username);
+        return self::doRequest($url, null, Request::METHOD_GET);
+    }
+
+    /**
      * Create a new instance of the Client if we don't have it or
      * return the one we already have to reuse
      *
@@ -130,11 +150,10 @@ class ApiClient {
     protected static function doRequest($url, array $postData = null, $method = Request::METHOD_GET)
     {
         $client = self::getClientInstance();
-        // Set the timeout to a higher value, in case working on
-        // a remote API that has long duration to return a response object.
         $client->setOptions(array(
             'timeout' => 30,
-        ));
+        )
+        );
         $client->setUri($url);
         $client->setMethod($method);
 
@@ -147,9 +166,6 @@ class ApiClient {
         if ($response->isSuccess()) {
             return JsonDecoder::decode($response->getBody(), Json::TYPE_ARRAY);
         } else {
-            $logger = new Logger;
-            $logger->addWriter(new Stream('data/logs/apiclient.log'));
-            $logger->debug($response->getBody());
             return FALSE;
         }
     }

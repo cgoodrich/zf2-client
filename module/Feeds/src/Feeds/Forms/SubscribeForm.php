@@ -9,10 +9,10 @@ class SubscribeForm extends Form
     public function __construct($name = null)
     {
         parent::__construct('feeds-subscribe');
-
+        
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'input-append');
-
+        
         $this->add(array(
             'name' => 'url',
             'type'  => 'Zend\Form\Element\Url',
