@@ -8,20 +8,6 @@
  */
 
 return array(
-    'router' => array(
-        'routes' => array(
-            'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        'controller' => 'Common\Controller\Index',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
-        ),
-    ),
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
@@ -35,11 +21,6 @@ return array(
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'Common\Controller\Index' => 'Common\Controller\IndexController'
         ),
     ),
     'view_helpers' => array(

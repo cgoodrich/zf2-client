@@ -7,6 +7,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Users\Entity\User;
+use Wall\Entity\Wall;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Forms\LinkForm;
@@ -34,10 +35,10 @@ class IndexController extends AbstractActionController
         $this->layout()->username = $username;
         // use the ApiClient to get the data of the wall by
         // calling getWall()
-        $response = ApiClient::getWall($username);
+        $userData = ApiClient::getWall($username);
 
         // if we have a response, then decode it.
-        if ($response !== FALSE) {
+        if ($userData !== FALSE) {
             // hydrator is a component from Stdlib in ZF2
             // it is used to populate objects with data.
 
@@ -50,14 +51,15 @@ class IndexController extends AbstractActionController
 
             // hydrate a new User entity (Users\Entity\User) with the
             // $response object.
-            $user = $hydrator->hydrate($response, new User());
+            $user = $hydrator->hydrate($userData, new User());
+            $wall = $hydrator->hydrate($userData, new Wall());
         } else {
             // otherwise, set a 404 code and return if the $response is FALSE.
             $this->getResponse()->setStatusCode(404);
             return;
         }
 
-        $paginator = new Paginator(new ArrayAdapter($user->getFeed()));
+        $paginator = new Paginator(new ArrayAdapter($wall->getFeed()));
         $paginator->setItemCountPerPage(5);
         $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
 
@@ -175,6 +177,9 @@ class IndexController extends AbstractActionController
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
+        $viewData['user'] = $user;
+        $viewData['isMyWall'] = !empty($loggedInUser)? $loggedInUser->getUsername() == $username : false;
+        $viewData['username'] = $username;
         $viewData['paginator'] = $paginator;
 
         if ($flashMessenger->hasMessages()) {
