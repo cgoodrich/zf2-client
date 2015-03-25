@@ -7,6 +7,7 @@ return array(
     'Wall\Entity\Image'               => __DIR__ . '/src/Wall/Entity/Image.php',
     'Wall\Entity\Link'                => __DIR__ . '/src/Wall/Entity/Link.php',
     'Wall\Entity\Status'              => __DIR__ . '/src/Wall/Entity/Status.php',
+    'Wall\Entity\Wall'                => __DIR__ . '/src/Wall/Entity/Wall.php',
     'Wall\Forms\CommentForm'          => __DIR__ . '/src/Wall/Forms/CommentForm.php',
     'Wall\Forms\ImageForm'            => __DIR__ . '/src/Wall/Forms/ImageForm.php',
     'Wall\Forms\LinkForm'             => __DIR__ . '/src/Wall/Forms/LinkForm.php',
