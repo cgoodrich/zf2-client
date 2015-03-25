@@ -8,22 +8,3 @@
 <?php echo $this->formElementErrors($form->get('csrf')); ?>
 
 <?php echo $this->form()->closeTag() ?>
-
-<?php
-/*
- * This form is a partial. To Keep the code organized,
- * we create a new partial and store the view code inside.
- *
- * Then, when we want to show the form on the view, we just need
- * to include the partial and pass the form as a parameter
- * itself.
- *
- * @Example:
- * <?php
- *   echo $this->partial(
- *    'forms/text-content-form.phtml',
- *     array('form' => $textContentForm));
- * ?>
- */
-?>
-
