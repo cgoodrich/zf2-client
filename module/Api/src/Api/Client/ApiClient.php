@@ -33,7 +33,17 @@ class ApiClient {
     protected static $endpointWall = '/api/wall/%s';
     protected static $endpointFeeds = '/api/feeds/%s';
     protected static $endpointSpecificFeed = '/api/feeds/%s/%d';
+    protected static $endpointUsers = '/api/users';
+    protected static $endpointGetUser = '/api/users/%s';
 
+    /*
+     * Let a user sign up
+     */
+    public static function registerUser($postData)
+    {
+        $url = self::$endpointHost . self::$endpointUsers;
+        return self::doRequest($url, $postData, Request::METHOD_POST);
+    }
     /**
      * Perform an API reqquest to retrieve the data of the wall
      * of an specific user on the social network
