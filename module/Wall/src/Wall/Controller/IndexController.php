@@ -4,6 +4,8 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\ArrayAdapter;
 use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
@@ -55,6 +57,9 @@ class IndexController extends AbstractActionController
             return;
         }
 
+        $paginator = new Paginator(new ArrayAdapter($user->getFeed()));
+        $paginator->setItemCountPerPage(5);
+        $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
 
         // Get the request object
         $request = $this->getRequest();
@@ -170,6 +175,7 @@ class IndexController extends AbstractActionController
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
+        $viewData['paginator'] = $paginator;
 
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
